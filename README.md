@@ -1,2 +1,2 @@
 # xq-docs
-xquery docs generator
+xquery docs generator for xqerl
