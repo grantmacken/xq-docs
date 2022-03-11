@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+declare -a args
+args=("$@")
+BaseName=$(basename "${BASH_SOURCE[0]}")
+function msg() {
+  echo >&2 -e "${1-}"
+}
+
+function die() {
+  local msg=$(echo -n "✘  " && echo $1)
+  local code=${2-1} # default exit status 1
+  msg "$msg"
+  exit "$code"
+}
+
+case "${#args[@]}" in
+1)
+  SRC=src/data/$(echo $1 | grep -oP '^(src/data/)?\K(.+)$')
+  URI="http://localhost:8081/db/$(echo $1 | grep -oP '^(src/data/)?\K(.+)$')"
+  [ -d  $SRC ] || die "$SRC: NOT a file "
+  echo "##[ $URI ]##"
+	curl -s --show-error 	--header "Accept: text/plain" $URI
+  echo
+  ;;
+*)
+  die "Usage: $(basename "${BASH_SOURCE[0]}") [src] 1 arg required" 
+  ;;
+esac

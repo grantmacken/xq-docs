@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+declare -a args
+args=("$@")
+BaseName=$(basename "${BASH_SOURCE[0]}")
+DASH=$(printf %60s | tr ' ' '-' && echo)
+
+function msg() {
+  echo >&2 -e "${1-}"
+}
+
+function die() {
+  local msg=$(echo -n "✘  " && echo $1)
+  local code=${2-1} # default exit status 1
+  msg "$msg"
+  exit "$code"
+}
+
+case "${#args[@]}" in
+1)
+  BASE=$(echo ${args[0]} | grep -oP '^(src/data/)?\K(.+)$')
+  SRC="src/data/$BASE"
+  DIRNAME=$(dirname $SRC)
+  BASENAME=$(basename $BASE)
+  EXT="${BASENAME##*.}"
+  RESOURCE="${BASENAME%.*}"
+  [ -f $SRC ] || die "[ $SRC ]: NOT a file "
+    echo $DASH
+    # use extension
+  case ${EXT} in
+  md)
+podman exec xq xqerl eval "
+M = xqerl:compile(\"./src/code/${BaseName}.xq\"),
+Arg1 = list_to_binary(\"${args[0]}\"),
+Args = #{<<\"src\">> => Arg1 }, 
+case M:main(Args) of
+    Atom when is_atom(Atom) -> Atom;
+    Bin when is_binary(Bin) -> binary_to_list(Bin);
+    Tup when is_tuple(Tup) -> Tup;
+    List when is_list(List) -> [binary_to_list(X) || X <- List];
+    Map when is_map(Map) -> Map;
+    _ -> 'TODO'
+  end.
+"
+podman exec xq ls priv/static/assets/example.com
+podman cp xq:/usr/local/xqerl/priv/static/assets/example.com/docs ./
+
+ # mv -v ${DIRNAME}/${RESOURCE}.html docs/
+  ;;
+  *)
+    die " [ ${ext} ] can not handle extension "
+    ;;
+  esac
+  ;;
+*)
+  die "Usage: $(basename "${BASH_SOURCE[0]}") [src] 1 arg required"
+  ;;
+esac
