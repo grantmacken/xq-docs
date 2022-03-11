@@ -1,23 +1,68 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>xqerl documentation</title><link rel="stylesheet" href="/assets/styles/sakura.css" type="text/css"><link rel="icon" href="/assets/images/favicon.ico" sizes="any"></head><body><img src="/assets/images/logo.png" alt="xqerl logo"><h1>xqerl documentation</h1><main><article>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>xqerl documentation</title><link rel="stylesheet" href="assets/styles/sakura.css" type="text/css"><link rel="icon" href="assets/images/favicon.ico" sizes="any"></head><body><img src="assets/images/logo.png" alt="xqerl logo"><h1>xqerl documentation</h1><main><article>
   
   <p>
+    To use 
     <a title="" href="https://zadean.github.io/xqerl">xqerl</a>
+     you don&rsquo;t need to learn erlang, however since
     
-    maintained by
-    
-    <a title="" href="https://github.com/zadean">Zachary Dean</a>
-    ,
-    
-    is an Erlang XQuery 3.1 Processor and XML Database.
+    xqerl is a xQuery 3.1 application server you do need to know a bit about xQuery.
   </p>
   <p>
-    xQuery 3.1 is the query language for building data driven web applications.
+    TODO: point to resources
+  </p>
+  <h2>
+    Getting started
+  </h2>
+  <p>
+    In our examples we are going to use podman instead of docker,
+    
+    however you can use docker instead by replacing the word podman with docker.
+    
+    since podman and docker commands a pretty much the same.
   </p>
   <p>
-    &lsquo;Xqerl is a xQuery 3.1 application server, with a built in database that
+    If you want to install podman 
+    <a title="" href="https://podman.io/getting-started/installation">follow these instructions</a>
+  </p>
+  <pre><code>podman pull ghcr.io/grantmacken/xqerl:0.0.23
+podman run --rm --name xq \
+		--publish 8081:8081 \
+    --detach \
+    ghcr.io/grantmacken/xqerl:0.0.23
+</code></pre>
+  <h2>
+    storing data from sources
+  </h2>
+  <ol>
+    <li>
+      <p>
+        Source structured markup data like XML and JSON can be parsed and stored in the xqerl databased as XDM items as defined in
+        
+        the 
+        <a title="" href="https://www.w3.org/TR/xpath-datamodel-31">XQuery and XPath Data Model</a>
+      </p>
+    </li>
+    <li>
+      <p>
+        If the data source is not marked up then the this data can be stored as unparsed text.
+      </p>
+    </li>
+    <li>
+      <p>
+        If the data source is binary then a link item pointing to the file location can be stored in the database.
+      </p>
+    </li>
+    <li>
+      <p>
+        Finally the xqerl database can store XDM items like maps and arrays functions
+      </p>
+    </li>
+  </ol>
+  <p>
+    Xqerl is a xQuery 3.1 application server, with a built in database that
     
-    can store any XDM item. These XDM database items include document-nodes, maps, arrays, and even functions&rsquo;
+    can store any XDM item. These XDM database items include document-nodes, maps, arrays, and even functions
   </p>
   <h1>
     data sources
