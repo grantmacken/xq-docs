@@ -72,3 +72,4 @@ docs: src/data/example.com/docs/index.md
 	$(MAKE) data
 	$(MAKE) code
 	bin/documentation $<
+	firefox docs/index.html
